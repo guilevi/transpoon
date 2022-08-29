@@ -58,12 +58,10 @@ end
 local function translateText(text,from,to)
     local query=hs.http.encodeForQuery(text)
     local url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl='..from..'&tl='..to..'&dt=t&q='..query
-print(inspect(url))
 headers={}
 headers["User-agent"]='Mozilla/5.0'
  response, result, headers = hs.http.get(url, headers)
  translationResult=hs.json.decode(result)[1][1][1]
- print(inspect(response),inspect(result))
  return translationResult
 end
 
