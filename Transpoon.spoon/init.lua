@@ -18,14 +18,18 @@ spokenPhrase
 ]]
 
 local function getLastPhrase()
+	if hs.application.get("VoiceOver") == nil then
+		return
+	end
+
     success, result, output = hs.osascript.applescript(lastPhraseScript)
     if not success then
         print(inspect(output))
-        return ""
+        return
     end
 
     if result:match("^%s*$") then
-        return ""
+        return
     end
 
     return result
@@ -45,6 +49,10 @@ print('speaking',inspect(text),'which is a ',type(text))
     local script = speakScript:gsub("MESSAGE", function ()
         return text
     end)
+
+	if result:match("^%s*$") then
+		return
+	end
 
     success, _, output = hs.osascript.applescript(script)
     if not success then
