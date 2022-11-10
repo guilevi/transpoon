@@ -7,8 +7,6 @@ Transpoon.version=1.0
 Transpoon.author="Guillem Leon <guilevi2000@gmail.com>"
 Transpoon.license="UnLicense"
 
-local lastPhrase = ""
-
 local lastPhraseScript = [[
 global spokenPhrase
 
@@ -19,19 +17,22 @@ end tell
 spokenPhrase
 ]]
 
-local function checkLastPhrase()
+local function getLastPhrase()
+	if hs.application.get("VoiceOver") == nil then
+		return
+	end
+
     success, result, output = hs.osascript.applescript(lastPhraseScript)
     if not success then
         print(inspect(output))
         return
     end
 
-    if result == lastPhrase or result:match("^%s*$") then
+    if result:match("^%s*$") then
         return
     end
 
-    
-    lastPhrase = result
+    return result
 end
 
 local speakScript = [[
@@ -48,6 +49,10 @@ print('speaking',inspect(text),'which is a ',type(text))
     local script = speakScript:gsub("MESSAGE", function ()
         return text
     end)
+
+	if result:match("^%s*$") then
+		return
+	end
 
     success, _, output = hs.osascript.applescript(script)
     if not success then
@@ -66,7 +71,7 @@ headers["User-agent"]='Mozilla/5.0'
 end
 
 local function transLastPhrase()
-return speak(translateText(lastPhrase, hs.settings.get('transpoon.sourceLanguage'), hs.settings.get('transpoon.destinationLanguage')))
+return speak(translateText(getLastPhrase(), hs.settings.get('transpoon.sourceLanguage'), hs.settings.get('transpoon.destinationLanguage')))
 end
 
 local function transClipboard()
@@ -83,7 +88,6 @@ return hs.settings.set('transpoon.destinationLanguage', text)
 
 
 
-local timer = hs.timer.doEvery(0.1, checkLastPhrase)
 local transHotkey = hs.hotkey.new("ctrl-shift", "t", transLastPhrase)
 local clipTransHotkey = hs.hotkey.new("ctrl-shift", "y", transClipboard)
 local toLangHotkey = hs.hotkey.new("ctrl-shift", "d", setDestLanguage)
@@ -98,14 +102,12 @@ hs.settings.set('transpoon.sourceLanguage', 'auto')
 end
 
 function Transpoon.start()
-    timer:start()
     transHotkey:enable()
     clipTransHotkey:enable()
     toLangHotkey:enable()
 end
 
 function Transpoon.stop()
-    timer:stop()
     transHotkey:disable()
     clipTransHotkey:disable()
     toLangHotkey:enable()
