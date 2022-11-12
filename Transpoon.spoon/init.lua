@@ -66,8 +66,12 @@ local function translateText(text,from,to)
 headers={}
 headers["User-agent"]='Mozilla/5.0'
  response, result, headers = hs.http.get(url, headers)
- translationResult=hs.json.decode(result)[1][1][1]
- return translationResult
+	local json = hs.json.decode(result)
+	local translationResult = ""
+	for k, v in pairs(json[1]) do
+		translationResult = translationResult .. v[1]
+	end
+	return translationResult
 end
 
 local function transLastPhrase()
