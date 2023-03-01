@@ -47,7 +47,7 @@ local function speak(text)
     -- and we can't guarantee that our message doesn't contain any of those.
 print('speaking',inspect(text),'which is a ',type(text))
     local script = speakScript:gsub("MESSAGE", function ()
-        return text
+        return text:gsub("\"", "\\\"")
     end)
 
 	if result:match("^%s*$") then
