@@ -1,6 +1,6 @@
 # Transpoon
 
-Transpoon is a Hammerspoon module that allows you to obtain quick translations for the last phrase spoken by VoiceOver or the contents of the clipboard.
+Transpoon is a Hammerspoon module that allows you to obtain quick translations for the last phrase spoken by VoiceOver or the contents of the clipboard. It can also automatically translate any spoken phrase in realtime. 
 
 ## Installation
 
@@ -23,6 +23,7 @@ Save the file, return to the Hammerspoon menu extra but this time click the relo
 | --- | --- |
 | Control+Shift+T | Translate last spoken phrase |
 | Control+Shift+Y | Translate Clipboard |
+| Control+Shift+A | Start and stop realtime auto translation |
 | Control+Shift+D | Set destination language or open reference |
 
 There's no special hotkey to copy the translation result, Vo + Shift + c is enough.
